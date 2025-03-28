@@ -1,41 +1,22 @@
 package hk.edu.hkmu.busapp;
 
 import android.content.Context;
-import android.content.Intent;
-import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.Button;
-import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.SortedMap;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.TreeMap;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -51,11 +32,13 @@ public class SearchedBusListActivity extends AppCompatActivity {
 
     ExpandableListView lv;
 
-    //Extta
+    //Extra
     private String route;
     private String type;
     private String bound;
     Timer timer;
+
+    FavouriteSystem favouriteSystem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +51,8 @@ public class SearchedBusListActivity extends AppCompatActivity {
         bound = extras.getString("bound");
         //Api called
         apiService = BusApiClient.getApiService();
+        //Favourite System
+        favouriteSystem = new FavouriteSystem(this);
 
         String textBound;
         if (bound.equals("I")){
@@ -204,7 +189,7 @@ public class SearchedBusListActivity extends AppCompatActivity {
 
         @Override
         public int getChildrenCount(int i) {
-            return adapEtaMap.get(i).getStopEta().length;
+            return 1;
         }
 
         @Override
@@ -213,8 +198,8 @@ public class SearchedBusListActivity extends AppCompatActivity {
         }
 
         @Override
-        public Integer getChild(int groupPosition, int childPosition) {
-            return adapEtaMap.get(groupPosition).getStopEta()[childPosition];
+        public Integer[] getChild(int groupPosition, int childPosition) {
+            return adapEtaMap.get(groupPosition).getStopEta();
         }
 
         @Override
@@ -236,7 +221,7 @@ public class SearchedBusListActivity extends AppCompatActivity {
             //RouteNameModel routeNameModel = getGroup(groupPosition);
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.route_stop, null);
+                convertView = inflater.inflate(R.layout.route_stop_group, null);
             }
             TextView textView = (TextView) convertView.findViewById(R.id.text1);
 
@@ -250,43 +235,35 @@ public class SearchedBusListActivity extends AppCompatActivity {
                                  boolean isLastChild, View convertView, ViewGroup parent) {
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.route_stop, null);
+                convertView = inflater.inflate(R.layout.route_stop_child, null);
             }
             TextView etaView1 = (TextView) convertView.findViewById(R.id.Eta1);
             TextView etaView2 = (TextView) convertView.findViewById(R.id.Eta2);
             TextView etaView3 = (TextView) convertView.findViewById(R.id.Eta3);
-            Integer currGroup = getChild(groupPosition,childPosition);
+            Integer[] currGroup = getChild(groupPosition,childPosition);
 
-            etaView1.setText("");
-            etaView2.setText("");
-            etaView3.setText("");
+            Log.e("API", "Test: " + currGroup[0]);
+            Log.e("API", "Test: " + currGroup[1]);
+            Log.e("API", "Test: " + currGroup[2]);
 
-            //Log.e("API", "Bound: "+bound);
-            //Log.e("API", "getGroup(groupPosition).getBound(): "+getGroup(groupPosition).getBound());
-            //Log.e("API", "Test3: "+getGroup(groupPosition).getBound().equals(bound));
-            if(childPosition ==  0 && getGroup(groupPosition).getBound().equals(bound)){
-                if(currGroup != null){
-                    etaView1.setText(currGroup+" 分鐘");
-                }else if (currGroup == null ){
-                    etaView1.setText("暫時未有班次");
-                }
+            if (currGroup != null && getGroup(groupPosition).getBound().equals(bound)) {
+                etaView1.setText(currGroup[0] + " 分鐘");
+            } else if (currGroup == null) {
+                etaView1.setText("暫時未有班次");
             }
 
-            if(childPosition == 1 && getGroup(groupPosition).getBound().equals(bound) && currGroup != null){
-                if(currGroup != null){
-                    etaView2.setText(currGroup+" 分鐘");
-                }else if (currGroup == null ){
-                    etaView2.setText("");
-                }
+            if (currGroup != null && getGroup(groupPosition).getBound().equals(bound)) {
+                etaView2.setText(currGroup[1] + " 分鐘");
+            } else if (currGroup == null) {
+                etaView2.setText("");
             }
 
-            if(childPosition ==  2 && getGroup(groupPosition).getBound().equals(bound) && currGroup != null){
-                if(currGroup != null){
-                    etaView3.setText(currGroup+" 分鐘");
-                }else if (currGroup == null ){
-                    etaView3.setText("");
-                }
+            if (currGroup != null && getGroup(groupPosition).getBound().equals(bound)) {
+                etaView3.setText(currGroup[2] + " 分鐘");
+            } else if (currGroup == null) {
+                etaView3.setText("");
             }
+
             return convertView;
         }
 
