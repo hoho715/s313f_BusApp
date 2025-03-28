@@ -157,13 +157,17 @@ public class SearchedBusListActivity extends AppCompatActivity {
                                     EtaListModel.EtaModel currItem = list.get(i);
                                     int seq = currItem.getSeq();
                                     int etaSeq = currItem.getEtaSeq();
+                                    if (etaSeq > 3){
+                                        continue;
+                                    }
                                     Integer currEta = null;
                                     if(currItem.getEtaTimeStamp() != null){
                                         currEta = currItem.getEta();
                                     }
-
                                     String currBound = currItem.getBound();
                                     if(currBound.equals(bound)){
+                                        Log.e("API", "seq-1: " +(seq-1));
+                                        Log.e("API", "etaSeq-1: " +(etaSeq-1));
                                         etaMap.get(seq-1).setBound(currBound);
                                         etaMap.get(seq-1).getStopEta()[etaSeq-1] = currEta;
                                     }
