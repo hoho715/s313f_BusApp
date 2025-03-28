@@ -45,7 +45,11 @@ public class EtaListModel {
             return bound;
         }
 
-        public int getEta() {
+        public Integer getEta() {
+            if(etaTimeStamp  == null){
+                return null;
+            }
+
             OffsetDateTime givenTime = OffsetDateTime.parse(etaTimeStamp);
             OffsetDateTime currentTime = OffsetDateTime.now(ZoneId.of("Hongkong"));
             Duration duration = Duration.between(givenTime, currentTime);

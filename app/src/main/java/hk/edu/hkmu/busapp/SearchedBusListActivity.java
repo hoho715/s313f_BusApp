@@ -157,7 +157,11 @@ public class SearchedBusListActivity extends AppCompatActivity {
                                     EtaListModel.EtaModel currItem = list.get(i);
                                     int seq = currItem.getSeq();
                                     int etaSeq = currItem.getEtaSeq();
-                                    int currEta = currItem.getEta();
+                                    Integer currEta = null;
+                                    if(currItem.getEtaTimeStamp() != null){
+                                        currEta = currItem.getEta();
+                                    }
+
                                     String currBound = currItem.getBound();
                                     if(currBound.equals(bound)){
                                         etaMap.get(seq-1).setBound(currBound);
@@ -253,18 +257,31 @@ public class SearchedBusListActivity extends AppCompatActivity {
             etaView2.setText("");
             etaView3.setText("");
 
-
             //Log.e("API", "Bound: "+bound);
             //Log.e("API", "getGroup(groupPosition).getBound(): "+getGroup(groupPosition).getBound());
             //Log.e("API", "Test3: "+getGroup(groupPosition).getBound().equals(bound));
-            if(childPosition ==  0 & getGroup(groupPosition).getBound().equals(bound) & currGroup != null){
-                etaView1.setText(currGroup+" 分鐘");
+            if(childPosition ==  0 && getGroup(groupPosition).getBound().equals(bound)){
+                if(currGroup != null){
+                    etaView1.setText(currGroup+" 分鐘");
+                }else if (currGroup == null ){
+                    etaView1.setText("暫時未有班次");
+                }
             }
-            if(childPosition == 1 & getGroup(groupPosition).getBound().equals(bound) & currGroup != null){
-                etaView2.setText(currGroup+" 分鐘");
+
+            if(childPosition == 1 && getGroup(groupPosition).getBound().equals(bound) && currGroup != null){
+                if(currGroup != null){
+                    etaView2.setText(currGroup+" 分鐘");
+                }else if (currGroup == null ){
+                    etaView2.setText("");
+                }
             }
-            if(childPosition ==  2& getGroup(groupPosition).getBound().equals(bound) & currGroup != null){
-                etaView3.setText(currGroup+" 分鐘");
+
+            if(childPosition ==  2 && getGroup(groupPosition).getBound().equals(bound) && currGroup != null){
+                if(currGroup != null){
+                    etaView3.setText(currGroup+" 分鐘");
+                }else if (currGroup == null ){
+                    etaView3.setText("");
+                }
             }
             return convertView;
         }

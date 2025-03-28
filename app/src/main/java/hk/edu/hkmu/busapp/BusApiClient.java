@@ -4,7 +4,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class BusApiClient {
-    private static final String BASE_URL = "https://data.etabus.gov.hk/";
+        private static final String BASE_URL = "https://data.etabus.gov.hk/";
     private static BusApiService apiService;
 
     public static BusApiService getApiService() {
