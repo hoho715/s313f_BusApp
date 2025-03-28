@@ -1,18 +1,40 @@
 package hk.edu.hkmu.busapp;
 
+import android.content.Context;
+import android.content.Intent;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
+import android.widget.ExpandableListAdapter;
+import android.widget.ExpandableListView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.TreeMap;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -22,13 +44,16 @@ public class SearchedBusListActivity extends AppCompatActivity {
     private BusApiService apiService;
     private RouteStopListModel routeStopList;
     private TempNameListContainerModel tempNameListContainerModel;
-    private List<RouteStopListModel.StopData> stopDataList;
-    private ArrayList<String> stopNameListData = new ArrayList();
 
-    ListView lv;
-    ArrayAdapter<String> arr;
-    Call<String> call2;
+    RouteStopAdapter  adapter;
+    private List<RouteNameModel> etaMap = new ArrayList<>();
 
+    ExpandableListView lv;
+
+    //Extta
+    private String route;
+    private String type;
+    private String bound;
     Timer timer;
 
     @Override
@@ -37,9 +62,9 @@ public class SearchedBusListActivity extends AppCompatActivity {
         setContentView(R.layout.bus_route);
 
         Bundle extras = getIntent().getExtras();
-        String route = extras.getString("route");
-        String type = extras.getString("type");
-        String bound = extras.getString("bound");
+        route = extras.getString("route");
+        type = extras.getString("type");
+        bound = extras.getString("bound");
         //Api called
         apiService = BusApiClient.getApiService();
 
@@ -54,18 +79,20 @@ public class SearchedBusListActivity extends AppCompatActivity {
 
         //SetList
         lv = findViewById(R.id.lvRoute);
-        arr =new  ArrayAdapter<String>(this,
-                android.R.layout.simple_list_item_1,
-                stopNameListData);
-        lv.setAdapter(arr);
+        adapter =new RouteStopAdapter(this, etaMap);
+        lv.setAdapter(adapter);
+
 
         call.enqueue(new Callback<RouteStopListModel>(){
             @Override
             public void onResponse(Call<RouteStopListModel> call, Response<RouteStopListModel> response) {
                 if (response.isSuccessful()) {
                     routeStopList = response.body();
-                    stopDataList = routeStopList.getRouteStopList();
-                    fetchStopNames(stopDataList.size()-1);
+                    Log.e("API", "Api1");
+                    for(RouteStopListModel.StopData data: routeStopList.getRouteStopList()){
+                        etaMap.add(new RouteNameModel(data.getStopId()));
+                    }
+                    fetchStopNames(routeStopList.getRouteStopList().size()-1);
                 } else {
                     Log.e("API", "Error: " + response.code());
                 }
@@ -76,44 +103,29 @@ public class SearchedBusListActivity extends AppCompatActivity {
                 Log.e("API", "Failed: " + t.getMessage());
             }
         });
-
-        //timer = new Timer();
-        //timer.schedule(new RemindTask(), 0, 10000); // delay in seconds
     }
-
-    private class RemindTask extends TimerTask {
-        @Override
-        public void run() {
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    // call your method here
-                    Toast.makeText(SearchedBusListActivity.this, "C'Mom no hands!", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
-    }
-
     private void fetchStopNames(int counter) {
         if (!(counter >= 0)) {
-            Log.e("API", counter +"Stopping!");
             // All names fetched, update UI
-            arr.notifyDataSetChanged();
+            adapter.updateList(etaMap);
+            timer = new Timer();
+            timer.schedule(new etaTask(), 0, 10000);
             return;
         }
 
-        String currentStopId = stopDataList.get(counter).getStopId();
+        String currentStopId = routeStopList.getRouteStopList().get(counter).getStopId();
         Log.e("API", "Getting id " + currentStopId);
         apiService.getStopName(currentStopId).enqueue(new Callback<TempNameListContainerModel>() {
             @Override
             public void onResponse(Call<TempNameListContainerModel> call, Response<TempNameListContainerModel> response) {
                 if (response.isSuccessful()) {
                     tempNameListContainerModel = response.body();
-                    stopDataList.get(counter).setNameTc(tempNameListContainerModel.getTempNameListModel().getNameTc());
-                    stopDataList.get(counter).setNameEn(tempNameListContainerModel.getTempNameListModel().getNameEn());
-                    stopDataList.get(counter).setNameSc(tempNameListContainerModel.getTempNameListModel().getNameSc());
-                    stopNameListData.add(tempNameListContainerModel.getTempNameListModel().getNameTc());
+                    String NameTc = tempNameListContainerModel.getTempNameListModel().getNameTc();
+                    String CurrId = routeStopList.getRouteStopList().get(counter).getStopId();
+                    Log.e("API", CurrId+" "+NameTc);
+                    etaMap.get(counter).setStopName(NameTc);
                 } else {
-                    stopNameListData.add("Unknown Stop");
+                    //stopNameListData.add("Unknown Stop");
                     Log.e("API", "Error: " + response.code());
                 }
                 // Process next stop
@@ -122,12 +134,174 @@ public class SearchedBusListActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<TempNameListContainerModel> call, Throwable t) {
-                stopNameListData.add("Error loading stop");
+                //stopNameListData.add("Error loading stop");
                 Log.e("API", "Failed: " + t.getMessage());
                 // Process next stop even if this one failed
                 fetchStopNames(counter-1);
             }
         });
+    }
+
+    private class etaTask extends TimerTask {
+        @Override
+        public void run() {
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    apiService.getRouteEta(route,type).enqueue(new Callback<EtaListModel>() {
+                        @Override
+                        public void onResponse(Call<EtaListModel> call, Response<EtaListModel> response) {
+                            if (response.isSuccessful()) {
+                                EtaListModel model = response.body();
+                                for(EtaListModel.EtaModel etaModel:model.getDatalist()){
+                                    etaMap.get(etaModel.getSeq()-1).getStopEta()[etaModel.getEtaSeq()-1] = etaModel.getEta();
+                                }
+                                adapter.updateList(etaMap);
+                            } else {
+                                Log.e("API", "Error: " + response.code());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<EtaListModel> call, Throwable t) {
+                            Log.e("API", "Failed: " + t.getMessage());
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    private class RouteStopAdapter extends BaseExpandableListAdapter {
+        private Context context;
+        private List<RouteNameModel> adapEtaMap;
+
+        public RouteStopAdapter(Context context, List<RouteNameModel> etaMap) {
+            this.adapEtaMap = etaMap;
+            this.context = context;
+        }
+
+        @Override
+        public int getGroupCount() {
+            return adapEtaMap.size();
+        }
+
+        @Override
+        public int getChildrenCount(int i) {
+            return adapEtaMap.get(i).getStopEta().length;
+        }
+
+        @Override
+        public  RouteNameModel getGroup(int groupPosition) {
+            return adapEtaMap.get(groupPosition);
+        }
+
+        @Override
+        public Integer getChild(int groupPosition, int childPosition) {
+            return adapEtaMap.get(groupPosition).getStopEta()[childPosition];
+        }
+
+        @Override
+        public long getGroupId(int groupPosition) {
+            return groupPosition;
+        }
+        @Override
+        public long getChildId(int groupPosition, int childPosition) {
+            return childPosition;
+        }
+        @Override
+        public boolean hasStableIds() {
+            return false;
+        }
+
+        @Override
+        public View getGroupView(int groupPosition, boolean isExpanded,
+                                 View convertView, ViewGroup parent) {
+            //RouteNameModel routeNameModel = getGroup(groupPosition);
+            if (convertView == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = inflater.inflate(R.layout.route_stop, null);
+            }
+            TextView textView = (TextView) convertView.findViewById(R.id.text1);
+
+            RouteNameModel currGroup = getGroup(groupPosition);
+            textView.setText(currGroup.getStopName());
+            return convertView;
+        }
+
+        @Override
+        public View getChildView(int groupPosition, int childPosition,
+                                 boolean isLastChild, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                convertView = inflater.inflate(R.layout.route_stop, null);
+            }
+            TextView etaView1 = (TextView) convertView.findViewById(R.id.Eta1);
+            TextView etaView2 = (TextView) convertView.findViewById(R.id.Eta2);
+            TextView etaView3 = (TextView) convertView.findViewById(R.id.Eta3);
+            Integer currGroup = getChild(groupPosition,childPosition);
+
+            etaView1.setText("");
+            etaView2.setText("");
+            etaView3.setText("");
+
+            Log.e("Display", "db: gp:" + groupPosition+" cp:"+childPosition);
+            if(childPosition ==  0 & currGroup != null){
+                etaView1.setText(currGroup+" 分鐘");
+            }
+            if(childPosition == 1 & currGroup != null){
+                etaView2.setText(currGroup+" 分鐘");
+            }
+            if(childPosition ==  2 & currGroup != null){
+                etaView3.setText(currGroup+" 分鐘");
+            }
+            return convertView;
+        }
+
+        @Override
+        public boolean isChildSelectable(int groupPosition, int childPosition) {
+            return true;
+        }
+
+        public void updateList(List<RouteNameModel> list){
+            this.adapEtaMap = list;
+            notifyDataSetChanged();
+        }
+    }
+
+    private class RouteNameModel{
+        private String stopId;
+        private String stopName;
+        private Integer[] stopEta;
+
+        public RouteNameModel(String stopId) {
+            this.stopId = stopId;
+            this.stopEta = new Integer[3];
+        }
+
+        public String getStopId() {
+            return stopId;
+        }
+
+        public String getStopName() {
+            return stopName;
+        }
+
+        public Integer[] getStopEta() {
+            return stopEta;
+        }
+
+        public void setStopId(String stopId) {
+            this.stopId = stopId;
+        }
+
+        public void setStopName(String stopName) {
+            this.stopName = stopName;
+        }
+
+        public void setStopEta(Integer[] stopEta) {
+            this.stopEta = stopEta;
+        }
+
     }
 }
 

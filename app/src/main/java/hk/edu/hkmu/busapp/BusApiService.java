@@ -15,5 +15,8 @@ public interface BusApiService {
     @GET("/v1/transport/kmb/stop/{stopId}")
     Call<TempNameListContainerModel> getStopName(@Path("stopId") String stopId);
 
+    @GET("/v1/transport/kmb/route-eta/{route}/{type}")
+    Call<EtaListModel> getRouteEta(@Path("route") String route,@Path("type") String type);
+
 }
 

@@ -18,11 +18,12 @@ public class RouteStopListModel {
         @SerializedName("long")
         private String longitude;
 
+        @SerializedName("seq")
+        private String seq;
+
         private String nameEn;
         private String nameTc;
         private String nameSc;
-
-
 
         // Getters
         public String getStopId() {
@@ -35,6 +36,10 @@ public class RouteStopListModel {
 
         public String getLongitude() {
             return longitude;
+        }
+
+        public String getSeq() {
+            return seq;
         }
 
         public String getNameEn() {
