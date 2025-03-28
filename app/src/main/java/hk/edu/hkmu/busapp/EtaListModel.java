@@ -1,5 +1,7 @@
 package hk.edu.hkmu.busapp;
 
+import android.util.Log;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.time.ZoneId;
@@ -23,6 +25,9 @@ public class EtaListModel {
         @SerializedName("eta")
         private String etaTimeStamp;
 
+        @SerializedName("dir")
+        private String bound;
+
 
         public int getSeq() {
             return seq;
@@ -36,13 +41,16 @@ public class EtaListModel {
             return etaTimeStamp;
         }
 
+        public String getBound() {
+            return bound;
+        }
+
         public int getEta() {
             OffsetDateTime givenTime = OffsetDateTime.parse(etaTimeStamp);
             OffsetDateTime currentTime = OffsetDateTime.now(ZoneId.of("Hongkong"));
             Duration duration = Duration.between(givenTime, currentTime);
-            System.out.println("givenTime: "+givenTime+"currentTime: "+currentTime+"duration: "+duration);
-            System.out.println("duration.toMinutes(): "+duration.toMinutes());
-            return Math.toIntExact(duration.toMillis()/60000);
+
+            return (int) Math.abs(duration.toMinutes());
         }
     }
 

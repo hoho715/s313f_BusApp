@@ -30,6 +30,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.Timer;
@@ -46,7 +47,7 @@ public class SearchedBusListActivity extends AppCompatActivity {
     private TempNameListContainerModel tempNameListContainerModel;
 
     RouteStopAdapter  adapter;
-    private List<RouteNameModel> etaMap = new ArrayList<>();
+    private List<RouteStopModel> etaMap = new ArrayList<>();
 
     ExpandableListView lv;
 
@@ -69,7 +70,7 @@ public class SearchedBusListActivity extends AppCompatActivity {
         apiService = BusApiClient.getApiService();
 
         String textBound;
-        if (bound == "0"){
+        if (bound.equals("I")){
             textBound = "inbound";
         }else{
             textBound = "outbound";
@@ -90,7 +91,7 @@ public class SearchedBusListActivity extends AppCompatActivity {
                     routeStopList = response.body();
                     Log.e("API", "Api1");
                     for(RouteStopListModel.StopData data: routeStopList.getRouteStopList()){
-                        etaMap.add(new RouteNameModel(data.getStopId()));
+                        etaMap.add(new RouteStopModel(data.getStopId()));
                     }
                     fetchStopNames(routeStopList.getRouteStopList().size()-1);
                 } else {
@@ -114,7 +115,6 @@ public class SearchedBusListActivity extends AppCompatActivity {
         }
 
         String currentStopId = routeStopList.getRouteStopList().get(counter).getStopId();
-        Log.e("API", "Getting id " + currentStopId);
         apiService.getStopName(currentStopId).enqueue(new Callback<TempNameListContainerModel>() {
             @Override
             public void onResponse(Call<TempNameListContainerModel> call, Response<TempNameListContainerModel> response) {
@@ -122,7 +122,6 @@ public class SearchedBusListActivity extends AppCompatActivity {
                     tempNameListContainerModel = response.body();
                     String NameTc = tempNameListContainerModel.getTempNameListModel().getNameTc();
                     String CurrId = routeStopList.getRouteStopList().get(counter).getStopId();
-                    Log.e("API", CurrId+" "+NameTc);
                     etaMap.get(counter).setStopName(NameTc);
                 } else {
                     //stopNameListData.add("Unknown Stop");
@@ -152,8 +151,18 @@ public class SearchedBusListActivity extends AppCompatActivity {
                         public void onResponse(Call<EtaListModel> call, Response<EtaListModel> response) {
                             if (response.isSuccessful()) {
                                 EtaListModel model = response.body();
-                                for(EtaListModel.EtaModel etaModel:model.getDatalist()){
-                                    etaMap.get(etaModel.getSeq()-1).getStopEta()[etaModel.getEtaSeq()-1] = etaModel.getEta();
+
+                                List<EtaListModel.EtaModel> list = model.getDatalist();
+                                for (int i = 0; i < list.size(); i++) {
+                                    EtaListModel.EtaModel currItem = list.get(i);
+                                    int seq = currItem.getSeq();
+                                    int etaSeq = currItem.getEtaSeq();
+                                    int currEta = currItem.getEta();
+                                    String currBound = currItem.getBound();
+                                    if(currBound.equals(bound)){
+                                        etaMap.get(seq-1).setBound(currBound);
+                                        etaMap.get(seq-1).getStopEta()[etaSeq-1] = currEta;
+                                    }
                                 }
                                 adapter.updateList(etaMap);
                             } else {
@@ -173,9 +182,9 @@ public class SearchedBusListActivity extends AppCompatActivity {
 
     private class RouteStopAdapter extends BaseExpandableListAdapter {
         private Context context;
-        private List<RouteNameModel> adapEtaMap;
+        private List<RouteStopModel> adapEtaMap;
 
-        public RouteStopAdapter(Context context, List<RouteNameModel> etaMap) {
+        public RouteStopAdapter(Context context, List<RouteStopModel> etaMap) {
             this.adapEtaMap = etaMap;
             this.context = context;
         }
@@ -191,7 +200,7 @@ public class SearchedBusListActivity extends AppCompatActivity {
         }
 
         @Override
-        public  RouteNameModel getGroup(int groupPosition) {
+        public  RouteStopModel getGroup(int groupPosition) {
             return adapEtaMap.get(groupPosition);
         }
 
@@ -223,7 +232,7 @@ public class SearchedBusListActivity extends AppCompatActivity {
             }
             TextView textView = (TextView) convertView.findViewById(R.id.text1);
 
-            RouteNameModel currGroup = getGroup(groupPosition);
+            RouteStopModel currGroup = getGroup(groupPosition);
             textView.setText(currGroup.getStopName());
             return convertView;
         }
@@ -244,14 +253,17 @@ public class SearchedBusListActivity extends AppCompatActivity {
             etaView2.setText("");
             etaView3.setText("");
 
-            Log.e("Display", "db: gp:" + groupPosition+" cp:"+childPosition);
-            if(childPosition ==  0 & currGroup != null){
+
+            //Log.e("API", "Bound: "+bound);
+            //Log.e("API", "getGroup(groupPosition).getBound(): "+getGroup(groupPosition).getBound());
+            //Log.e("API", "Test3: "+getGroup(groupPosition).getBound().equals(bound));
+            if(childPosition ==  0 & getGroup(groupPosition).getBound().equals(bound) & currGroup != null){
                 etaView1.setText(currGroup+" 分鐘");
             }
-            if(childPosition == 1 & currGroup != null){
+            if(childPosition == 1 & getGroup(groupPosition).getBound().equals(bound) & currGroup != null){
                 etaView2.setText(currGroup+" 分鐘");
             }
-            if(childPosition ==  2 & currGroup != null){
+            if(childPosition ==  2& getGroup(groupPosition).getBound().equals(bound) & currGroup != null){
                 etaView3.setText(currGroup+" 分鐘");
             }
             return convertView;
@@ -262,18 +274,19 @@ public class SearchedBusListActivity extends AppCompatActivity {
             return true;
         }
 
-        public void updateList(List<RouteNameModel> list){
+        public void updateList(List<RouteStopModel> list){
             this.adapEtaMap = list;
             notifyDataSetChanged();
         }
     }
 
-    private class RouteNameModel{
+    private class RouteStopModel{
         private String stopId;
         private String stopName;
         private Integer[] stopEta;
+        private String bound;
 
-        public RouteNameModel(String stopId) {
+        public RouteStopModel(String stopId) {
             this.stopId = stopId;
             this.stopEta = new Integer[3];
         }
@@ -290,6 +303,10 @@ public class SearchedBusListActivity extends AppCompatActivity {
             return stopEta;
         }
 
+        public String getBound() {
+            return bound;
+        }
+
         public void setStopId(String stopId) {
             this.stopId = stopId;
         }
@@ -302,6 +319,9 @@ public class SearchedBusListActivity extends AppCompatActivity {
             this.stopEta = stopEta;
         }
 
+        public void setBound(String bound) {
+            this.bound = bound;
+        }
     }
 }
 
