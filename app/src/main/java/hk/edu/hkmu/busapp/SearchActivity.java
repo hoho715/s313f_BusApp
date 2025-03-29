@@ -14,10 +14,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
 
@@ -25,7 +26,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity  {
+public class SearchActivity extends AppCompatActivity  {
     private BusApiService apiService;
     private EditText searchBus;
 
@@ -34,13 +35,10 @@ public class MainActivity extends AppCompatActivity  {
     private ArrayList<BusRouteListModel.BusRouteModel> filteredBusListData = new ArrayList<>();;
     BusRouteAdapter adapter;
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_search);
 
         busList = findViewById(R.id.bus_list);
         searchBus = findViewById(R.id.search_bus);
@@ -69,6 +67,21 @@ public class MainActivity extends AppCompatActivity  {
                 Log.e("Text", "afterTextChanged: "+s.toString());
                 filterBusData(s.toString());
             }
+        });
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.homeBottomNavigationView);
+        bottomNavigationView.setSelectedItemId(R.id.search);
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            if(item.getItemId() == R.id.home){
+                startActivity(new Intent(this, HomeActivity.class));
+            }
+            if(item.getItemId() == R.id.fav){
+                startActivity(new Intent(this, FavouriteActivity.class));
+            }
+            if(item.getItemId() == R.id.setting){
+                startActivity(new Intent(this, SettingActivity.class));
+            }
+            return true;
         });
 
 
@@ -154,4 +167,5 @@ public class MainActivity extends AppCompatActivity  {
 
     }
 }
+
 

@@ -7,8 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -224,9 +226,18 @@ public class SearchedBusListActivity extends AppCompatActivity {
                 convertView = inflater.inflate(R.layout.route_stop_group, null);
             }
             TextView textView = (TextView) convertView.findViewById(R.id.text1);
+            Button favBtn = (Button) convertView.findViewById(R.id.fav_btn);
 
             RouteStopModel currGroup = getGroup(groupPosition);
             textView.setText(currGroup.getStopName());
+
+            favBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    favouriteSystem.setFavouriteRoute(new FavouriteSystem.FavouriteSystemItem(route,type,bound,currGroup.getStopId()));
+                }
+            });
+
             return convertView;
         }
 
