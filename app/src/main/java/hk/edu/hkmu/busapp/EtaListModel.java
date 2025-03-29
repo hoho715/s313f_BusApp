@@ -22,27 +22,75 @@ public class EtaListModel {
         @SerializedName("eta_seq")
         private int etaSeq;
 
+        @SerializedName("route")
+        private String route;
+
+        @SerializedName("service_type")
+        private String type;
+
         @SerializedName("eta")
         private String etaTimeStamp;
+
+        @SerializedName("stop")
+        String stopId;
 
         @SerializedName("dir")
         private String bound;
 
-
         public int getSeq() {
             return seq;
+        }
+
+        public void setSeq(int seq) {
+            this.seq = seq;
         }
 
         public int getEtaSeq() {
             return etaSeq;
         }
 
+        public void setEtaSeq(int etaSeq) {
+            this.etaSeq = etaSeq;
+        }
+
+        public String getRoute() {
+            return route;
+        }
+
+        public void setRoute(String route) {
+            this.route = route;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
         public String getEtaTimeStamp() {
             return etaTimeStamp;
         }
 
+        public void setEtaTimeStamp(String etaTimeStamp) {
+            this.etaTimeStamp = etaTimeStamp;
+        }
+
+        public String getStopId() {
+            return stopId;
+        }
+
+        public void setStopId(String stopId) {
+            this.stopId = stopId;
+        }
+
         public String getBound() {
             return bound;
+        }
+
+        public void setBound(String bound) {
+            this.bound = bound;
         }
 
         public Integer getEta() {

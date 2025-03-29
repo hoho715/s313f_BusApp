@@ -110,6 +110,7 @@ public class SearchedBusListActivity extends AppCompatActivity {
                     String NameTc = tempNameListContainerModel.getTempNameListModel().getNameTc();
                     String CurrId = routeStopList.getRouteStopList().get(counter).getStopId();
                     etaMap.get(counter).setStopName(NameTc);
+                    etaMap.get(counter).setSeq(routeStopList.getRouteStopList().get(counter).getSeq());
                 } else {
                     //stopNameListData.add("Unknown Stop");
                     Log.e("API", "Error: " + response.code());
@@ -157,6 +158,7 @@ public class SearchedBusListActivity extends AppCompatActivity {
                                         Log.e("API", "etaSeq-1: " +(etaSeq-1));
                                         etaMap.get(seq-1).setBound(currBound);
                                         etaMap.get(seq-1).getStopEta()[etaSeq-1] = currEta;
+                                        etaMap.get(seq-1).setSeq(seq);
                                     }
                                 }
                                 adapter.updateList(etaMap);
@@ -234,7 +236,7 @@ public class SearchedBusListActivity extends AppCompatActivity {
             favBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    favouriteSystem.setFavouriteRoute(new FavouriteSystem.FavouriteSystemItem(route,type,bound,currGroup.getStopId()));
+                    favouriteSystem.setFavouriteRoute(new FavouriteSystem.FavouriteSystemItem(route,type,bound,currGroup.getStopId(),currGroup.getSeq()));
                 }
             });
 
@@ -294,6 +296,7 @@ public class SearchedBusListActivity extends AppCompatActivity {
         private String stopName;
         private Integer[] stopEta;
         private String bound;
+        private int seq;
 
         public RouteStopModel(String stopId) {
             this.stopId = stopId;
@@ -330,6 +333,14 @@ public class SearchedBusListActivity extends AppCompatActivity {
 
         public void setBound(String bound) {
             this.bound = bound;
+        }
+
+        public int getSeq() {
+            return seq;
+        }
+
+        public void setSeq(int seq) {
+            this.seq = seq;
         }
     }
 }

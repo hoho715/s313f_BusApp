@@ -7,6 +7,12 @@
     android:background="#90D5FF"
     tools:context=".FavouriteActivity">
 
+    <ListView
+        android:id="@+id/fav_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"/>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/favBottomNavigationView"
         android:layout_width="match_parent"

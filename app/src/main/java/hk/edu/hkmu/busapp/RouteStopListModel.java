@@ -19,7 +19,7 @@ public class RouteStopListModel {
         private String longitude;
 
         @SerializedName("seq")
-        private String seq;
+        private int seq;
 
         private String nameEn;
         private String nameTc;
@@ -38,7 +38,7 @@ public class RouteStopListModel {
             return longitude;
         }
 
-        public String getSeq() {
+        public int getSeq() {
             return seq;
         }
 
