@@ -296,12 +296,6 @@ public class FavouriteActivity extends AppCompatActivity {
                                                 && favouriteSystemItem.getSeq() ==currSeq
                                                 && etaModel.getEtaSeq() == 1;
 
-                                        Log.e("API", favouriteSystemItem.getStopId()+" == "+currId );
-                                        Log.e("API", favouriteSystemItem.getRoute()+" == "+currRoute );
-                                        Log.e("API", favouriteSystemItem.getBound()+" == "+currBound );
-                                        Log.e("API", favouriteSystemItem.getType()+" == "+currType );
-                                        Log.e("API", favouriteSystemItem.getSeq()+" == "+currSeq );
-                                        Log.e("API", String.valueOf(isSame));
                                         if(isSame){
                                             EtaListModel.EtaModel data = new EtaListModel.EtaModel();
                                             data.setEtaTimeStamp(currTimeStamp);

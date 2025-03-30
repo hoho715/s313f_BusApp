@@ -24,5 +24,12 @@ public interface BusApiService {
 
     @GET("/v1/transport/kmb/eta/{stopId}/{route}/{type}")
     Call<EtaListModel> getRouteStopEta(@Path("stopId") String stopId, @Path("route") String bound, @Path("type") String type);
+
+    @GET("/v1/transport/kmb/stop")
+    Call<BusStopModel> getStops();
+
+
+    @GET("/v1/transport/kmb/stop-eta/{stopId}")
+    Call<EtaListModel> getEtaById(@Path("stopId")String stopId);
 }
 

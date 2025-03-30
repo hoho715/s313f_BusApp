@@ -12,22 +12,35 @@ public class BusRouteListModel {
         @SerializedName("route")
         private String id;
 
-        @SerializedName("dest_tc")
-        private String destination;
-
-        @SerializedName("orig_tc")
-        private String origin;
+        @SerializedName("bound")
+        private String bound;
 
         @SerializedName("service_type")
         private String serviceType;
 
-        @SerializedName("bound")
-        private String bound;
+        @SerializedName("dest_tc")
+        private String destinationTc;
+
+        @SerializedName("dest_en")
+        private String destinationEn;
+
+        @SerializedName("dest_sc")
+        private String destinationSc;
+
+        @SerializedName("orig_tc")
+        private String originTc;
+
+        @SerializedName("orig_en")
+        private String originEn;
+
+        @SerializedName("orig_sc")
+        private String originSc;
+
 
         // Getters
         public String getRoute() { return id; }
-        public String getDestination() { return destination; }
-        public String getOrigin() { return origin; }
+        public String getDestination() { return destinationTc; }
+        public String getOrigin() { return originTc; }
         public String getServiceType() { return serviceType; }
         public String getBound() { return bound; }
     }

@@ -32,10 +32,29 @@ public class EtaListModel {
         private String etaTimeStamp;
 
         @SerializedName("stop")
-        String stopId;
+        private String stopId;
 
         @SerializedName("dir")
         private String bound;
+
+        @SerializedName("dest_tc")
+        private String destTc;
+
+        @SerializedName("dest_en")
+        private String destEn;
+
+        @SerializedName("dest_sc")
+        private String destSc;
+
+        private String tempName;
+
+        public String getTempName() {
+            return tempName;
+        }
+
+        public void setTempName(String tempName) {
+            this.tempName = tempName;
+        }
 
         public int getSeq() {
             return seq;
@@ -91,6 +110,18 @@ public class EtaListModel {
 
         public void setBound(String bound) {
             this.bound = bound;
+        }
+
+        public String getDestTc() {
+            return destTc;
+        }
+
+        public String getDestEn() {
+            return destEn;
+        }
+
+        public String getDestSc() {
+            return destSc;
         }
 
         public Integer getEta() {
