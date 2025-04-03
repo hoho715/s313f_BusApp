@@ -11,5 +11,15 @@
     <string name="fav_item">收藏</string>
     <string name="setting_item">设定</string>
     <string name="minute">分钟</string>
+    <string name="to">往</string>
     <string name="unavailable">暂时未有班次</string>
+    <string name="add_fav">已收藏此站！</string>
+    <string name="already_fav">已加入收藏</string>
+    <string name="delete">删除</string>
+    <string name="fav_message">加入收藏？</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="fav_delete_message">删除收藏？</string>
+    <string name="darkmode">夜间模式</string>
+    <string name="bus_route">巴士路线</string>
 </resources>

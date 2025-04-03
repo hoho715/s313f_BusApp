@@ -70,13 +70,13 @@ public class FavouriteSystem {
                 +"|"+favouriteSystemItem.getBound()+"|"+favouriteSystemItem.getType();
         for (Map.Entry<String, ?> entry : allFavourite.entrySet()) {
             if(entry.getKey().toString().equals(checkey)){
-                Toast.makeText(context, "已收藏此站！", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.add_fav), Toast.LENGTH_SHORT).show();
                 return;
             }
         }
         prefsEditor.putString(checkey, json);
         Log.e("Fav", "Add cuccesfully");
-        Toast.makeText(context, "已加入收藏", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, context.getString(R.string.already_fav), Toast.LENGTH_SHORT).show();
         prefsEditor.commit();
     }
 

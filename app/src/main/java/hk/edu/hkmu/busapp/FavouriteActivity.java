@@ -1,6 +1,7 @@
 package hk.edu.hkmu.busapp;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -114,10 +116,23 @@ public class FavouriteActivity extends AppCompatActivity {
                 btn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        favouriteSystem.deleteFavouriteRoute(o.getFavouriteSystemItem());
-                        favListItemList.remove(position);
-                        updateList(favListItemList);
-                        notifyDataSetChanged();
+                        new AlertDialog.Builder(FavouriteActivity.this)
+                                .setTitle(getString(R.string.fav_item))
+                                .setMessage(getString(R.string.fav_delete_message))
+                                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        favouriteSystem.deleteFavouriteRoute(o.getFavouriteSystemItem());
+                                        favListItemList.remove(position);
+                                        updateList(favListItemList);
+                                        notifyDataSetChanged();
+                                    }
+                                })
+                                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss(); // Dismiss the dialog
+                                    }
+                                })
+                                .show();
                     }
                 });
 
@@ -128,6 +143,7 @@ public class FavouriteActivity extends AppCompatActivity {
                         intent.putExtra("route", o.getFavouriteSystemItem().getRoute());
                         intent.putExtra("bound", o.getFavouriteSystemItem().getBound());
                         intent.putExtra("type", o.getFavouriteSystemItem().getType());
+                        intent.putExtra("stopId",o.getFavouriteSystemItem().getStopId());
                         startActivity(intent);
                     }
                 });

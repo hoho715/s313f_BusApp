@@ -4,14 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#90D5FF"
+    android:theme="@style/Theme.BusApp"
+    android:background="?attr/colorSecondary"
     tools:context=".FavouriteActivity">
+
+    <TextView
+        android:id="@+id/fav_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/fav_item"
+        android:textSize="24sp"
+        android:textColor="?android:textColorPrimary"
+        android:padding="16dp"
+        android:background="?attr/colorPrimary" />
 
     <ListView
         android:id="@+id/fav_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/fav_header"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/favBottomNavigationView"
@@ -19,5 +31,6 @@
         android:layout_height="75dp"
         app:layout_constraintHorizontal_bias="0.5"
         android:layout_alignParentBottom="true"
-        app:menu="@menu/bottom_nav_menu" />
+        app:menu="@menu/bottom_nav_menu"
+        android:background="?attr/colorPrimary"/>
 </RelativeLayout>

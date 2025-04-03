@@ -1,6 +1,7 @@
 package hk.edu.hkmu.busapp;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,12 +13,13 @@ import android.widget.ExpandableListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -39,6 +41,7 @@ public class SearchedBusListActivity extends AppCompatActivity {
     private String route;
     private String type;
     private String bound;
+    private String stopId;
     Timer timer;
 
     FavouriteSystem favouriteSystem;
@@ -52,6 +55,7 @@ public class SearchedBusListActivity extends AppCompatActivity {
         route = extras.getString("route");
         type = extras.getString("type");
         bound = extras.getString("bound");
+        stopId = extras.getString("stopId");
         //Api called
         apiService = BusApiClient.getApiService();
         //Favourite System
@@ -69,8 +73,17 @@ public class SearchedBusListActivity extends AppCompatActivity {
         //SetList
         lv = findViewById(R.id.lvRoute);
         adapter =new RouteStopAdapter(this, etaMap);
-        lv.setAdapter(adapter);
+        lv.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            int previousGroup = -1;
 
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                if(groupPosition != previousGroup)
+                    lv.collapseGroup(previousGroup);
+                previousGroup = groupPosition;
+            }
+        });
+        lv.setAdapter(adapter);
 
         call.enqueue(new Callback<RouteStopListModel>(){
             @Override
@@ -81,6 +94,22 @@ public class SearchedBusListActivity extends AppCompatActivity {
                     for(RouteStopListModel.StopData data: routeStopList.getRouteStopList()){
                         etaMap.add(new RouteStopModel(data.getStopId()));
                     }
+
+                    if(stopId != null){
+                        for (int i=0;i<etaMap.size();i++){
+                            Log.e("TEST",etaMap.get(i).getStopId()+" == "+stopId);
+                            Log.e("TEST", String.valueOf(etaMap.get(i).getStopId().equals(stopId)));
+                            if (etaMap.get(i).getStopId().equals(stopId)){
+                                lv.expandGroup(i);
+                                if(Objects.equals(etaMap.get(0).getStopId(), etaMap.get(etaMap.size()-1).getStopId())){
+                                    lv.expandGroup(0);
+                                }
+                            }
+                        }
+                    }else {
+                        lv.expandGroup(0);
+                    }
+
                     fetchStopNames(routeStopList.getRouteStopList().size()-1);
                 } else {
                     Log.e("API", "Error: " + response.code());
@@ -241,16 +270,29 @@ public class SearchedBusListActivity extends AppCompatActivity {
             String country = locale.getCountry();
 
             switch (country){
-                case "HK":textView.setText(currGroup.getStopNameTc());break;
-                case "US":textView.setText(currGroup.getStopNameEn());break;
-                case "CN":textView.setText(currGroup.getStopNameSc());break;
+                case "HK":textView.setText(currGroup.getSeq()+"."+currGroup.getStopNameTc());break;
+                case "US":textView.setText(currGroup.getSeq()+"."+currGroup.getStopNameEn());break;
+                case "CN":textView.setText(currGroup.getSeq()+"."+currGroup.getStopNameSc());break;
             }
 
 
             favBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    favouriteSystem.setFavouriteRoute(new FavouriteSystem.FavouriteSystemItem(route,type,bound,currGroup.getStopId(),currGroup.getSeq()));
+                    new AlertDialog.Builder(SearchedBusListActivity.this)
+                            .setTitle(getString(R.string.fav_item))
+                            .setMessage(getString(R.string.fav_message))
+                            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    favouriteSystem.setFavouriteRoute(new FavouriteSystem.FavouriteSystemItem(route,type,bound,currGroup.getStopId(),currGroup.getSeq()));
+                                }
+                            })
+                            .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss(); // Dismiss the dialog
+                                }
+                            })
+                            .show();
                 }
             });
 

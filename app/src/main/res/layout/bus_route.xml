@@ -4,13 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#90D5FF"
-    tools:context=".SearchedBusListActivity">
+    tools:context=".SearchedBusListActivity"
+    android:theme="@style/Theme.BusApp"
+    android:background="?attr/colorPrimary">
+
+    <TextView
+        android:id="@+id/route_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/bus_route"
+        android:textSize="24sp"
+        android:textColor="?android:textColorPrimary"
+        android:padding="16dp"
+        android:background="?attr/colorPrimary" />
 
     <ExpandableListView
         android:id="@+id/lvRoute"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"/>
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/route_header"
+        android:background="?attr/colorSecondary"/>
 
 </RelativeLayout>

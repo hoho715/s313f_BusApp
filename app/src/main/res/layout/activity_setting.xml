@@ -4,13 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#90D5FF"
+    android:theme="@style/Theme.BusApp"
+    android:background="?attr/colorSecondary"
     tools:context=".SettingActivity">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/setting_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+        android:text="@string/setting_item"
+        android:textSize="24sp"
+        android:textColor="?android:textColorPrimary"
+        android:padding="16dp"
+        android:background="?attr/colorPrimary" />
+
+    <LinearLayout
+        android:id="@+id/setting_lang"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/setting_header">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -22,6 +35,21 @@
             />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/setting_lang">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/darkmode"/>
+        <ToggleButton
+            android:id="@+id/dark_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/settingBottomNavigationView"
@@ -29,5 +57,6 @@
         android:layout_height="75dp"
         app:layout_constraintHorizontal_bias="0.5"
         android:layout_alignParentBottom="true"
-        app:menu="@menu/bottom_nav_menu" />
+        app:menu="@menu/bottom_nav_menu"
+        android:background="?attr/colorPrimary"/>
 </RelativeLayout>

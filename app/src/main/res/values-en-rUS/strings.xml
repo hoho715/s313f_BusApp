@@ -13,4 +13,13 @@
     <string name="minute">min(s)</string>
     <string name="to">to</string>
     <string name="unavailable">No unavailable route yet</string>
+    <string name="add_fav">Add to bookmark！</string>
+    <string name="already_fav">Alreaddy add to Bookmark</string>
+    <string name="delete">Delete</string>
+    <string name="fav_message">Add to bookmark？</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="fav_delete_message">Delete bookmark？</string>
+    <string name="darkmode">Dark mode</string>
+    <string name="bus_route">Bus route</string>
 </resources>

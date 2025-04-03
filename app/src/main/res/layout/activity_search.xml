@@ -4,7 +4,8 @@ xmlns:app="http://schemas.android.com/apk/res-auto"
 xmlns:tools="http://schemas.android.com/tools"
 android:layout_width="match_parent"
 android:layout_height="match_parent"
-android:background="#90D5FF"
+android:theme="@style/Theme.BusApp"
+android:background="?attr/colorPrimary"
 tools:context=".SearchActivity">
 
 <EditText
@@ -13,7 +14,7 @@ tools:context=".SearchActivity">
     android:layout_height="wrap_content"
     android:hint="@string/search"
     android:layout_margin="45dp"
-    android:background="@android:color/white"
+    android:background="?attr/colorSecondary"
     android:padding="10dp" />
 
 <ListView
@@ -21,6 +22,7 @@ tools:context=".SearchActivity">
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_below="@id/search_bus"
+    android:background="?attr/colorSecondary"
     android:layout_marginTop="16dp"/>
 
 <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -29,5 +31,6 @@ tools:context=".SearchActivity">
     android:layout_height="75dp"
     app:layout_constraintHorizontal_bias="0.5"
     android:layout_alignParentBottom="true"
+    android:background="?attr/colorPrimary"
     app:menu="@menu/bottom_nav_menu" />
 </RelativeLayout>

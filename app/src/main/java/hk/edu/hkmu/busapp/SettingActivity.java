@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -77,7 +78,19 @@ public class SettingActivity extends AppCompatActivity {
             spinner.setOnTouchListener(listener);
             spinner.setOnItemSelectedListener(listener);
             spinner.setAdapter(adapter);
-        spinner.setSelection(0,false);
+            spinner.setSelection(0,false);
+
+        findViewById(R.id.dark_toggle).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int nightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                if (nightMode == Configuration.UI_MODE_NIGHT_YES) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO); // Switch to light mode
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES); // Switch to dark mode
+                }
+            }
+        });
     }
 
     public void setLocale(String lang) {
