@@ -20,6 +20,7 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -125,16 +126,23 @@ public class FavouriteActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         Intent intent = new Intent  (context,SearchedBusListActivity.class);
                         intent.putExtra("route", o.getFavouriteSystemItem().getRoute());
-                        intent.putExtra("bound", o.getFavouriteSystemItem().getRoute());
-                        intent.putExtra("type", o.getFavouriteSystemItem().getRoute());
+                        intent.putExtra("bound", o.getFavouriteSystemItem().getBound());
+                        intent.putExtra("type", o.getFavouriteSystemItem().getType());
                         startActivity(intent);
                     }
                 });
 
+                Locale locale = getBaseContext().getResources().getConfiguration().locale;
+                String country = locale.getCountry();
+
                 tv1.setText(o.getFavouriteSystemItem().getRoute());
 
                 if(o.getDestNameModel().getDestTc() !=null){
-                    tv2.setText("往"+o.getDestNameModel().getDestTc());
+                    switch (country){
+                        case "HK":tv2.setText(getString(R.string.to)+" "+o.getDestNameModel().getDestTc());break;
+                        case "US":tv2.setText(getString(R.string.to)+" "+o.getDestNameModel().getDestEn());break;
+                        case "CN":tv2.setText(getString(R.string.to)+" "+o.getDestNameModel().getDestSc());break;
+                    }
                 }else {
                     tv2.setText("");
                 }
@@ -142,16 +150,18 @@ public class FavouriteActivity extends AppCompatActivity {
                 if(o.getEtaModel() !=null && o.getEtaModel().getEta() != null){
                     tv3.setText(o.getEtaModel().getEta().toString());
                 }else {
-                    tv3.setText("NA");
+                    tv3.setText("N/A");
                 }
 
                 if(o.getStopNameModel().getNameTc()!=null){
-                    tv4.setText(o.getStopNameModel().getNameTc());
+                    switch (country){
+                        case "HK":tv4.setText(o.getStopNameModel().getNameTc());break;
+                        case "US":tv4.setText(o.getStopNameModel().getNameEn());break;
+                        case "CN":tv4.setText(o.getStopNameModel().getNameSc());break;
+                    }
                 }else {
                     tv4.setText("");
                 }
-
-                tv5.setText("分鐘");
             }
             return v;
         }

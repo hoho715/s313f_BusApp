@@ -5,8 +5,9 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
+
     <TextView
-        android:id="@+id/fav_item_route"
+        android:id="@+id/home_item_route"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:text="1"
@@ -16,21 +17,19 @@
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_weight="3">
 
         <TextView
-            android:id="@+id/fav_item_destiny"
+            android:id="@+id/home_item_destiny"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:text="2"/>
         <TextView
-            android:id="@+id/fav_item_stop"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:id="@+id/home_item_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:text="4"/>
     </LinearLayout>
 
@@ -41,36 +40,16 @@
         android:layout_weight="1">
 
         <TextView
-            android:id="@+id/fav_item_min"
+            android:id="@+id/home_item_min"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="3"
-            android:textAlignment="center"
-            android:layout_weight="1"/>
+            android:textAlignment="center"/>
         <TextView
-            android:id="@+id/fav_item_min_text"
+            android:id="@+id/home_item_min_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/minute"
-            android:textAlignment="center"
-            android:layout_weight="1"/>
+            android:textAlignment="center"/>
     </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_weight="1">
-
-        <Button
-            android:id="@+id/fav_btn_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Delete"
-            android:padding="0dp"/>
-    </LinearLayout>
-
-
 </LinearLayout>

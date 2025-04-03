@@ -28,6 +28,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Timer;
 
@@ -66,7 +67,7 @@ public class HomeActivity extends AppCompatActivity {
         Call<BusStopModel> call2 = apiService.getStops();
         //SetList
         adapter = new BusRouteAdapter(this,
-                R.layout.fav_list_item,
+                R.layout.home_list_item,
                 displayList);
         busList.setAdapter(adapter);
 
@@ -78,13 +79,12 @@ public class HomeActivity extends AppCompatActivity {
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                Log.e("API", "onLocationChanged: ");
                 if (location != null) {
                     List<BusStopModel.BusStopDataModel> idNearBy200List = new ArrayList<>();
                     for (BusStopModel.BusStopDataModel busStopDataModel : stopList) {
                         if (haversine200(location.getLatitude(), location.getLongitude(), busStopDataModel.getLocLat(), busStopDataModel.getLocLong())) {
                             idNearBy200List.add(busStopDataModel);
-                            Log.e("API", busStopDataModel.getStop());
+                            //Log.e("API", busStopDataModel.getStop());
                         }
                     }
                     filteredStopList.clear();
@@ -108,7 +108,6 @@ public class HomeActivity extends AppCompatActivity {
                                             if (etaModel.getEtaSeq() == 1 && etaModel.getEta()!=null) {
                                                 etaModel.setStopId(busStopDataModel.getStop());
                                                 tempList.add(etaModel);
-                                                Log.e("API", String.valueOf(tempList.size()));
                                             }
                                         }
                                     }
@@ -118,7 +117,6 @@ public class HomeActivity extends AppCompatActivity {
                                 completedCalls[0]++;
                                 // Update the adapter once all calls are completed
                                 if (completedCalls[0] == totalCalls) {
-                                    Log.e("API", "???: " + completedCalls[0]);
                                     adapter.updateList(tempList);
                                 }
                             }
@@ -134,8 +132,6 @@ public class HomeActivity extends AppCompatActivity {
                             }
                         });
                     }
-                } else {
-                    Log.e("GPS", "No location yet");
                 }
 
             }
@@ -229,18 +225,26 @@ public class HomeActivity extends AppCompatActivity {
             View v = convertView;
             if (v == null) {
                 LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                v = vi.inflate(R.layout.fav_list_item, null);
+                v = vi.inflate(R.layout.home_list_item, null);
             }
             EtaListModel.EtaModel tempEtaObj = adapList.get(position);
             if (tempEtaObj != null) {
-                TextView tv1 = (TextView) v.findViewById(R.id.fav_item_route);
-                TextView tv2 = (TextView)v.findViewById(R.id.fav_item_destiny);
-                TextView tv3 = (TextView)v.findViewById(R.id.fav_item_min);
-                TextView tv4 = (TextView)v.findViewById(R.id.fav_item_stop);
-                TextView tv5 = (TextView)v.findViewById(R.id.fav_item_min_text);
+                TextView tv1 = (TextView) v.findViewById(R.id.home_item_route);
+                TextView tv2 = (TextView)v.findViewById(R.id.home_item_destiny);
+                TextView tv3 = (TextView)v.findViewById(R.id.home_item_min);
+                TextView tv4 = (TextView)v.findViewById(R.id.home_item_stop);
+                TextView tv5 = (TextView)v.findViewById(R.id.home_item_min_text);
 
                 tv1.setText(tempEtaObj.getRoute());
-                tv2.setText( "往 "+tempEtaObj.getDestTc());
+
+                Locale locale = getBaseContext().getResources().getConfiguration().locale;
+                String country = locale.getCountry();
+                switch (country){
+                    case "HK":tv2.setText( getString(R.string.to)+" "+tempEtaObj.getDestTc());break;
+                    case "US":tv2.setText( getString(R.string.to)+" "+tempEtaObj.getDestEn());break;
+                    case "CN":tv2.setText( getString(R.string.to)+" "+tempEtaObj.getDestSc());break;
+                }
+
                 if(tempEtaObj != null && tempEtaObj.getEta()!=null){
                     tv3.setText(tempEtaObj.getEta().toString());
                 }else{
@@ -249,7 +253,12 @@ public class HomeActivity extends AppCompatActivity {
 
                 for(BusStopModel.BusStopDataModel busStopDataModel:stopList){
                     if(busStopDataModel.getStop().equals(tempEtaObj.getStopId())){
-                        tv4.setText(busStopDataModel.getNameTc());
+                        switch (country){
+                            case "HK":tv4.setText(busStopDataModel.getNameTc());break;
+                            case "US":tv4.setText(busStopDataModel.getNameEn());break;
+                            case "CN":tv4.setText(busStopDataModel.getNameSc());break;
+                        }
+
                     }
                 }
                 //tv4.setText(tempEtaObj.get);
@@ -272,8 +281,6 @@ public class HomeActivity extends AppCompatActivity {
         public void updateList(ArrayList<EtaListModel.EtaModel> list){
             adapList.clear();
             adapList.addAll(list);
-            Log.e("API", "Update size: "+list.size());
-            Log.e("API", "total size: "+adapList.size());
             notifyDataSetChanged();
         }
     }
@@ -308,7 +315,7 @@ public class HomeActivity extends AppCompatActivity {
         double rad = 6371;
         double c = 2 * Math.asin(Math.sqrt(a));
 
-        if((rad * c)*1000 <200){
+        if((rad * c)*1000 < 300){
             return true;
         }
         return false;

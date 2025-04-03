@@ -2,6 +2,7 @@ package hk.edu.hkmu.busapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -144,10 +146,20 @@ public class SearchActivity extends AppCompatActivity  {
             if (o != null) {
                 TextView tt = (TextView) v.findViewById(R.id.text1);
                 TextView bt = (TextView) v.findViewById(R.id.text2);
+
+                Locale locale = getBaseContext().getResources().getConfiguration().locale;
+                String country = locale.getCountry();
+
                 if (tt != null) {
-                    tt.setText(o.getRoute());                            }
+                    tt.setText(o.getRoute());
+                }
+
                 if(bt != null){
-                    bt.setText( o.getOrigin() +" 往 "+o.getDestination());
+                    switch (country){
+                        case "HK":bt.setText( o.getOriginTc() +" "+getString(R.string.to)+" "+o.getDestinationTc());break;
+                        case "US":bt.setText( o.getOriginEn() +" "+getString(R.string.to)+" "+o.getDestinationEn());break;
+                        case "CN":bt.setText( o.getOriginSc() +" "+getString(R.string.to)+" "+o.getDestinationSc());break;
+                    }
                 }
             }
 

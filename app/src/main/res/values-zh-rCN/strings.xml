@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BusApp</string>
+    <string name="search">搜寻</string>
+    <string name="language">语言</string>
+    <string name="lan_hk">繁体中文</string>
+    <string name="lan_en">英文</string>
+    <string name="lan_zh">简体中文</string>
+    <string name="home_item">主页</string>
+    <string name="search_item">搜寻</string>
+    <string name="fav_item">收藏</string>
+    <string name="setting_item">设定</string>
+    <string name="minute">分钟</string>
+    <string name="unavailable">暂时未有班次</string>
+</resources>

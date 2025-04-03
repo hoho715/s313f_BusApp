@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BusApp</string>
+    <string name="search">Search</string>
+    <string name="language">Language</string>
+    <string name="lan_hk">Tradition Chinese</string>
+    <string name="lan_en">English</string>
+    <string name="lan_zh">Simplified Chinese</string>
+    <string name="home_item">Home</string>
+    <string name="search_item">Search</string>
+    <string name="fav_item">Bookmark</string>
+    <string name="setting_item">Setting</string>
+    <string name="minute">min(s)</string>
+    <string name="to">to</string>
+    <string name="unavailable">No unavailable route yet</string>
+</resources>

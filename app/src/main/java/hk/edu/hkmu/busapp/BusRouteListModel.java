@@ -43,6 +43,30 @@ public class BusRouteListModel {
         public String getOrigin() { return originTc; }
         public String getServiceType() { return serviceType; }
         public String getBound() { return bound; }
+
+        public String getDestinationTc() {
+            return destinationTc;
+        }
+
+        public String getDestinationEn() {
+            return destinationEn;
+        }
+
+        public String getDestinationSc() {
+            return destinationSc;
+        }
+
+        public String getOriginTc() {
+            return originTc;
+        }
+
+        public String getOriginEn() {
+            return originEn;
+        }
+
+        public String getOriginSc() {
+            return originSc;
+        }
     }
     // Getters
     public List<BusRouteModel> getRouteList() { return routeList; }

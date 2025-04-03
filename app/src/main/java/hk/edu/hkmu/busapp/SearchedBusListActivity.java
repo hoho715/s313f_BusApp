@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -108,8 +109,13 @@ public class SearchedBusListActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     tempNameListContainerModel = response.body();
                     String NameTc = tempNameListContainerModel.getTempNameListModel().getNameTc();
+                    String NameEn = tempNameListContainerModel.getTempNameListModel().getNameEn();
+                    String NameSc = tempNameListContainerModel.getTempNameListModel().getNameSc();
                     String CurrId = routeStopList.getRouteStopList().get(counter).getStopId();
                     etaMap.get(counter).setStopName(NameTc);
+                    etaMap.get(counter).setStopNameTc(NameTc);
+                    etaMap.get(counter).setStopNameEn(NameEn);
+                    etaMap.get(counter).setStopNameSc(NameSc);
                     etaMap.get(counter).setSeq(routeStopList.getRouteStopList().get(counter).getSeq());
                 } else {
                     //stopNameListData.add("Unknown Stop");
@@ -231,7 +237,15 @@ public class SearchedBusListActivity extends AppCompatActivity {
             Button favBtn = (Button) convertView.findViewById(R.id.fav_btn);
 
             RouteStopModel currGroup = getGroup(groupPosition);
-            textView.setText(currGroup.getStopName());
+            Locale locale = getBaseContext().getResources().getConfiguration().locale;
+            String country = locale.getCountry();
+
+            switch (country){
+                case "HK":textView.setText(currGroup.getStopNameTc());break;
+                case "US":textView.setText(currGroup.getStopNameEn());break;
+                case "CN":textView.setText(currGroup.getStopNameSc());break;
+            }
+
 
             favBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -255,24 +269,20 @@ public class SearchedBusListActivity extends AppCompatActivity {
             TextView etaView3 = (TextView) convertView.findViewById(R.id.Eta3);
             Integer[] currGroup = getChild(groupPosition,childPosition);
 
-            Log.e("API", "Test: " + currGroup[0]);
-            Log.e("API", "Test: " + currGroup[1]);
-            Log.e("API", "Test: " + currGroup[2]);
-
-            if (currGroup != null && getGroup(groupPosition).getBound().equals(bound)) {
-                etaView1.setText(currGroup[0] + " 分鐘");
-            } else if (currGroup == null) {
-                etaView1.setText("暫時未有班次");
+            if (currGroup[0] != null && getGroup(groupPosition).getBound().equals(bound)) {
+                etaView1.setText(String.format("%3s %s", currGroup[0], getString(R.string.minute)));
+            } else if (currGroup[0] == null) {
+                etaView1.setText(R.string.unavailable);
             }
 
-            if (currGroup != null && getGroup(groupPosition).getBound().equals(bound)) {
-                etaView2.setText(currGroup[1] + " 分鐘");
+            if (currGroup[1] != null && getGroup(groupPosition).getBound().equals(bound)) {
+                etaView2.setText(String.format("%3s %s", currGroup[1], getString(R.string.minute)));
             } else if (currGroup == null) {
                 etaView2.setText("");
             }
 
-            if (currGroup != null && getGroup(groupPosition).getBound().equals(bound)) {
-                etaView3.setText(currGroup[2] + " 分鐘");
+            if (currGroup[2] != null && getGroup(groupPosition).getBound().equals(bound)) {
+                etaView3.setText(String.format("%3s %s", currGroup[2], getString(R.string.minute)));
             } else if (currGroup == null) {
                 etaView3.setText("");
             }
@@ -294,6 +304,9 @@ public class SearchedBusListActivity extends AppCompatActivity {
     private class RouteStopModel{
         private String stopId;
         private String stopName;
+        private String stopNameTc;
+        private String stopNameSc;
+        private String stopNameEn;
         private Integer[] stopEta;
         private String bound;
         private int seq;
@@ -341,6 +354,30 @@ public class SearchedBusListActivity extends AppCompatActivity {
 
         public void setSeq(int seq) {
             this.seq = seq;
+        }
+
+        public String getStopNameEn() {
+            return stopNameEn;
+        }
+
+        public void setStopNameEn(String stopNameEn) {
+            this.stopNameEn = stopNameEn;
+        }
+
+        public String getStopNameSc() {
+            return stopNameSc;
+        }
+
+        public void setStopNameSc(String stopNameSc) {
+            this.stopNameSc = stopNameSc;
+        }
+
+        public String getStopNameTc() {
+            return stopNameTc;
+        }
+
+        public void setStopNameTc(String stopNameTc) {
+            this.stopNameTc = stopNameTc;
         }
     }
 }
