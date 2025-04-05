@@ -79,6 +79,7 @@ public class HomeActivity extends AppCompatActivity {
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
+                Log.e("loc","onLocationChanged()");
                 if (location != null) {
                     List<BusStopModel.BusStopDataModel> idNearBy200List = new ArrayList<>();
                     for (BusStopModel.BusStopDataModel busStopDataModel : stopList) {

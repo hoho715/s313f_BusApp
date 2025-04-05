@@ -5,11 +5,13 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.ExpandableListView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -263,7 +265,7 @@ public class SearchedBusListActivity extends AppCompatActivity {
                 convertView = inflater.inflate(R.layout.route_stop_group, null);
             }
             TextView textView = (TextView) convertView.findViewById(R.id.text1);
-            Button favBtn = (Button) convertView.findViewById(R.id.fav_btn);
+            ImageButton favBtn = (ImageButton) convertView.findViewById(R.id.fav_btn);
 
             RouteStopModel currGroup = getGroup(groupPosition);
             Locale locale = getBaseContext().getResources().getConfiguration().locale;
