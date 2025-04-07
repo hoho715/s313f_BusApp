@@ -273,6 +273,7 @@ public class HomeActivity extends AppCompatActivity {
                     intent.putExtra("route", tempEtaObj.getRoute());
                     intent.putExtra("bound", tempEtaObj.getBound());
                     intent.putExtra("type", tempEtaObj.getType());
+                    intent.putExtra("stopId",tempEtaObj.getStopId());
                     startActivity(intent);
                 }
             });

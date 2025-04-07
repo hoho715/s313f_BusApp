@@ -103,9 +103,10 @@ public class SearchedBusListActivity extends AppCompatActivity {
                             Log.e("TEST", String.valueOf(etaMap.get(i).getStopId().equals(stopId)));
                             if (etaMap.get(i).getStopId().equals(stopId)){
                                 lv.expandGroup(i);
-                                if(Objects.equals(etaMap.get(0).getStopId(), etaMap.get(etaMap.size()-1).getStopId())){
+                                lv.setSelection(i);
+/*                                if(Objects.equals(etaMap.get(0).getStopId(), etaMap.get(etaMap.size()-1).getStopId())){
                                     lv.expandGroup(0);
-                                }
+                                }*/
                             }
                         }
                     }else {
